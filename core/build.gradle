@@ -3,6 +3,7 @@ eclipse.project.name = appName + '-core'
 
 dependencies {
   api "com.badlogicgames.gdx:gdx:$gdxVersion"
+  api "com.esotericsoftware.spine:spine-libgdx:3.8.55.1"
   api "org.apache.groovy:groovy-all:$groovyVersion"
   api "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
 

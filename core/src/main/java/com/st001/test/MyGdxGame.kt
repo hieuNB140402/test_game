@@ -8,63 +8,91 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 class MyGdxGame : ApplicationAdapter() {
-    private lateinit var batch: SpriteBatch
-    private lateinit var character: CavedwellerCharacter
+
+    private lateinit var character1: CavedwellerCharacter
+    private lateinit var character2: CavedwellerCharacter
 
     override fun create() {
-        batch = SpriteBatch()
 
-        // Khởi tạo thực thể nhân vật hoạt họa xích ma
-        character = CavedwellerCharacter()
-        character.create()
+        character1 = CavedwellerCharacter()
+        character1.create()
+
+        character2 = CavedwellerCharacter()
+        character2.create()
+
+        character1.setPosition(
+            Gdx.graphics.width * 0.25f,
+            100f
+        )
+
+        character2.setPosition(
+            Gdx.graphics.width * 0.75f,
+            100f
+        )
+
+        character2.faceLeft()
     }
 
     override fun render() {
-        // Xóa sạch khung hình cũ với màu xám nhạt làm nền
+
         Gdx.gl.glClearColor(0.92f, 0.92f, 0.92f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
         val dt = Gdx.graphics.deltaTime
 
-        // LẮNG NGHE ĐIỀU KHIỂN TỪ NGƯỜI CHƠI (Tương tác bàn phím hoặc chạm)
         handleInput()
 
-        // Cập nhật logic toán học xương khớp cho nhân vật
-        character.update(dt)
+        character1.update(dt)
+        character2.update(dt)
 
-        // Tiến hành render vẽ nhân vật lên GPU
-        batch.begin()
-        character.draw(batch)
-        batch.end()
+        character1.render()
+        character2.render()
     }
 
     private fun handleInput() {
-        // --- ĐIỀU KHIỂN TRÊN DESKTOP (BÀN PHÍM) ---
-        if (Gdx.input.isKeyPressed(Input.Keys.A) || Gdx.input.isKeyPressed(Input.Keys.LEFT) ||
-            Gdx.input.isKeyPressed(Input.Keys.D) || Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-            character.setCharacterState(CavedwellerCharacter.State.WALK)
-        } else if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            character.startAttack()
-        } else {
-            character.setCharacterState(CavedwellerCharacter.State.IDLE)
+
+        val speed = 300f * Gdx.graphics.deltaTime
+
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            character1.move(-speed, 0f)
+            character1.faceLeft()
         }
 
-        // --- ĐIỀU KHIỂN TRÊN ĐIỆN THOẠI (CẢM ỨNG) ---
-        // Nếu chạm vào nửa bên phải màn hình thì CHÉM, chạm nửa bên trái thì ĐI BỘ
-        if (Gdx.input.isTouched) {
-            val touchX = Gdx.input.x.toFloat()
-            val screenWidth = Gdx.graphics.width.toFloat()
+        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+            character1.move(speed, 0f)
+            character1.faceRight()
+        }
 
-            if (touchX > screenWidth / 2f) {
-                character.startAttack()
-            } else {
-                character.setCharacterState(CavedwellerCharacter.State.WALK)
-            }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            character1.move(0f, speed)
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            character1.move(0f, -speed)
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            character1.startAttack()
+        }
+
+        if (Gdx.input.justTouched()) {
+            character1.startAttack()
+            character2.startAttack()
+        }
+
+        if (character1.getX() < character2.getX()) {
+            character1.faceRight()
+            character2.faceLeft()
+        } else {
+            character1.faceLeft()
+            character2.faceRight()
         }
     }
 
+
+
     override fun dispose() {
-        batch.dispose()
-        character.dispose() // Giải phóng toàn bộ mảng vùng nhớ texture của nhân vật
+        character1.dispose()
+        character2.dispose()
     }
 }

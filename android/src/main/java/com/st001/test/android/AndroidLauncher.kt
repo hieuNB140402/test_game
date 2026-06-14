@@ -7,10 +7,19 @@ import com.st001.test.MyGdxGame
 
 class AndroidLauncher : AndroidApplication() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
         super.onCreate(savedInstanceState)
-        val configuration = AndroidApplicationConfiguration()
-        configuration.useImmersiveMode = true // Recommended, but not required.
-        initialize(MyGdxGame(), configuration)
+
+        val config =
+            AndroidApplicationConfiguration()
+
+        config.useImmersiveMode = true
+
+        initialize(
+            MyGdxGame(),
+            config
+        )
     }
 }
